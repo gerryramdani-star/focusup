@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { Task, TaskPriority } from '../types';
 
@@ -30,7 +29,6 @@ const TaskList: React.FC<TaskListProps> = ({
     };
 
     return list.sort((a, b) => {
-      // Menggunakan fallback value (2 untuk Normal) jika prioritas tidak ditemukan
       const pA = priorityOrder[a.priority || 'Normal'] ?? 2;
       const pB = priorityOrder[b.priority || 'Normal'] ?? 2;
       
@@ -52,34 +50,34 @@ const TaskList: React.FC<TaskListProps> = ({
 
   return (
     <div className="flex flex-col h-full overflow-hidden glass rounded-[2rem] shadow-soft border-white/10">
-      <div className="p-5 md:p-6 border-b border-white/10 shrink-0">
-        <div className="flex justify-between items-center mb-5 md:mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-indigo-500/20 rounded-xl flex items-center justify-center">
-              <i className="fa-solid fa-layer-group text-indigo-400 text-base md:text-xl"></i>
+      <div className="p-4 md:p-6 border-b border-white/10 shrink-0">
+        <div className="flex justify-between items-center mb-4 md:mb-6">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="w-7 h-7 md:w-10 md:h-10 bg-indigo-500/20 rounded-lg md:rounded-xl flex items-center justify-center">
+              <i className="fa-solid fa-layer-group text-indigo-400 text-sm md:text-xl"></i>
             </div>
-            <h3 className="font-bold text-lg md:text-xl text-white tracking-tight">Timeline</h3>
+            <h3 className="font-bold text-base md:text-xl text-white tracking-tight">Timeline</h3>
           </div>
           <div className="flex gap-2">
             <button 
               onClick={onCopy}
-              className="text-[10px] md:text-xs font-bold bg-white/10 hover:bg-white/20 px-3 py-1.5 md:px-4 md:py-2 rounded-xl transition-all flex items-center gap-2 text-white border border-white/10"
+              className="text-[9px] md:text-xs font-bold bg-white/10 hover:bg-white/20 px-3 py-1.5 md:px-4 md:py-2 rounded-lg md:rounded-xl transition-all flex items-center gap-2 text-white border border-white/10"
             >
               <i className="fa-regular fa-copy"></i> SHARE
             </button>
           </div>
         </div>
         
-        <div className="flex items-center gap-3 md:gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <div className="relative flex-1">
             <input 
               type="date" 
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full pl-3 pr-3 py-2.5 md:pl-4 md:pr-4 md:py-3 bg-black/20 border border-white/10 rounded-xl md:rounded-2xl font-bold text-xs md:text-sm text-white focus:outline-none focus:ring-2 ring-indigo-500/50 transition-all appearance-none"
+              className="w-full px-3 py-2 md:px-4 md:py-3 bg-black/20 border border-white/10 rounded-xl font-bold text-xs md:text-sm text-white focus:outline-none focus:ring-2 ring-indigo-500/50 transition-all"
             />
           </div>
-          <div className="px-3 py-2.5 md:px-4 md:py-3 bg-indigo-500/10 rounded-xl md:rounded-2xl border border-indigo-500/20 whitespace-nowrap">
+          <div className="px-3 py-2 md:px-4 md:py-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 whitespace-nowrap">
             <span className="text-[10px] md:text-sm font-bold text-indigo-400">
               {pendingCount} Left
             </span>
@@ -87,14 +85,14 @@ const TaskList: React.FC<TaskListProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-2 md:space-y-4">
         {filteredTasks.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center py-12 md:py-20 opacity-60">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-800 rounded-full flex items-center justify-center mb-4 md:mb-6 border border-white/10">
-              <i className="fa-solid fa-wind text-2xl md:text-3xl text-slate-400"></i>
+          <div className="h-full flex flex-col items-center justify-center py-10 opacity-60">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-white/10">
+              <i className="fa-solid fa-wind text-xl md:text-2xl text-slate-400"></i>
             </div>
-            <p className="font-bold text-base md:text-lg text-white text-center">Empty & Clean</p>
-            <p className="text-[10px] md:text-sm text-slate-400 font-medium text-center">Belum ada tugas hari ini.</p>
+            <p className="font-bold text-sm md:text-lg text-white text-center">Empty & Clean</p>
+            <p className="text-[9px] md:text-sm text-slate-400 font-medium text-center">Belum ada tugas hari ini.</p>
           </div>
         ) : (
           filteredTasks.map(task => (
@@ -132,7 +130,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
               <button 
                 onClick={() => onDelete(task.id)}
-                className="opacity-0 group-hover:opacity-100 md:opacity-0 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-all shrink-0"
+                className="opacity-100 lg:opacity-0 group-hover:opacity-100 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-all shrink-0"
               >
                 <i className="fa-solid fa-trash-can text-xs md:text-sm"></i>
               </button>
