@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ConnectionState } from '../types';
 
@@ -25,19 +24,19 @@ const AssistantAvatar: React.FC<AssistantAvatarProps> = ({ state }) => {
   const { ring, glow } = getColors();
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 glass rounded-[2rem] shadow-lg border-white/10 shrink-0 h-full relative overflow-hidden group">
+    <div className="flex flex-col items-center justify-center p-4 lg:p-6 glass rounded-[2rem] shadow-lg border-white/10 shrink-0 relative overflow-hidden group">
       {/* Background Glow */}
       <div className={`absolute inset-0 transition-colors duration-1000 blur-3xl ${glow}`}></div>
       
       <div className="relative z-10 flex flex-col items-center">
-        <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-2 p-1.5 transition-all duration-700 shadow-2xl relative ${ring} ${state !== ConnectionState.OFFLINE ? 'animate-float' : ''}`}>
+        <div className={`w-16 h-16 md:w-20 lg:w-24 rounded-full border-2 p-1 transition-all duration-700 shadow-2xl relative ${ring} ${state !== ConnectionState.OFFLINE ? 'animate-float' : ''}`}>
           {/* Internal Pulse for active states */}
           {state !== ConnectionState.OFFLINE && state !== ConnectionState.ERROR && (
             <div className={`absolute inset-0 rounded-full animate-ping opacity-20 ${state === ConnectionState.LISTENING ? 'bg-pink-400' : 'bg-indigo-400'}`}></div>
           )}
           
           <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden flex items-center justify-center border border-white/10">
-            <svg viewBox="0 0 100 100" className="w-12 h-12 md:w-16 md:h-16">
+            <svg viewBox="0 0 100 100" className="w-10 h-10 md:w-14 lg:w-16">
                <defs>
                  <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                    <stop offset="0%" stopColor="#818cf8" />
@@ -53,9 +52,9 @@ const AssistantAvatar: React.FC<AssistantAvatarProps> = ({ state }) => {
           </div>
         </div>
         
-        <div className="mt-4 text-center">
-          <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Your Personal AI</p>
-          <h3 className="text-white font-bold text-sm md:text-base">
+        <div className="mt-3 lg:mt-4 text-center">
+          <p className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-0.5 md:mb-1">Your Personal AI</p>
+          <h3 className="text-white font-bold text-xs md:text-sm lg:text-base">
             {state === ConnectionState.OFFLINE ? 'FocusUp is Sleeping' : 
              state === ConnectionState.RECONNECTING ? 'FocusUp is Recovering' :
              state === ConnectionState.ERROR ? 'FocusUp is Disconnected' : 'FocusUp is Active'}
@@ -73,7 +72,7 @@ const AssistantAvatar: React.FC<AssistantAvatarProps> = ({ state }) => {
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
+          50% { transform: translateY(-8px); }
         }
         .animate-float {
           animation: float 4s ease-in-out infinite;
