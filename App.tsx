@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { Task, UserSettings, ConnectionState } from './types';
@@ -76,6 +77,10 @@ const App: React.FC = () => {
   }, [connectionState]);
 
   const handleUpdateTasks = (newTasks: Task[]) => setTasks(newTasks);
+
+  const handleRenameTask = (id: string, newContent: string) => {
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, content: newContent } : t));
+  };
 
   const addTask = (content: string, dateStr: string) => {
     const timestamp = new Date(`${dateStr}T12:00:00`).toISOString();
@@ -473,6 +478,7 @@ const App: React.FC = () => {
               tasks={tasks} 
               onToggle={(id) => handleUpdateTasks(tasks.map(t => t.id === id ? {...t, status: t.status === 'done' ? 'pending' : 'done'} : t))} 
               onDelete={(id) => handleUpdateTasks(tasks.filter(t => t.id !== id))} 
+              onRename={handleRenameTask}
               onCopy={() => { navigator.clipboard.writeText(tasks.map(t => `[${t.status}] ${t.content}`).join('\n')); alert('Copied!'); }}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
