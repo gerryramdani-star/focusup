@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { Task, UserSettings, ConnectionState } from './types';
@@ -402,68 +401,83 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen p-4 md:p-6 lg:p-8 max-w-[1400px] mx-auto transition-all duration-300">
-      <header className="flex justify-between items-center mb-6 md:mb-8 shrink-0">
+    <div className="flex flex-col min-h-screen p-3 md:p-6 lg:p-8 max-w-[1400px] mx-auto transition-all duration-300">
+      <header className="flex justify-between items-center mb-4 md:mb-8 shrink-0">
         <div className="flex items-center gap-3 md:gap-5">
-          <div className="w-10 h-10 md:w-14 md:h-14 glass rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
-            <i className="fa-solid fa-microphone-lines text-indigo-500 text-lg md:text-2xl"></i>
+          <div className="w-8 h-8 md:w-14 md:h-14 glass rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
+            <i className="fa-solid fa-microphone-lines text-indigo-500 text-sm md:text-2xl"></i>
           </div>
           <div>
-            <h1 className="text-xl md:text-3xl font-bold text-white tracking-tight leading-none mb-1">FocusUp</h1>
-            <p className="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest opacity-80">Smart Ranking Edition</p>
+            <h1 className="text-lg md:text-3xl font-bold text-white tracking-tight leading-none mb-0.5 md:mb-1">FocusUp</h1>
+            <p className="text-[7px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest opacity-80">Smart Ranking Edition</p>
           </div>
         </div>
         
         <div className="flex gap-2 md:gap-4">
-          <button onClick={() => setIsSettingsOpen(true)} className="w-10 h-10 md:w-12 md:h-12 glass rounded-xl md:rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-white shadow-md">
-            <i className="fa-solid fa-sliders text-sm md:text-base"></i>
+          <button onClick={() => setIsSettingsOpen(true)} className="w-8 h-8 md:w-12 md:h-12 glass rounded-xl md:rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-white shadow-md">
+            <i className="fa-solid fa-sliders text-xs md:text-base"></i>
           </button>
           
-          <div className="glass px-3 md:px-5 py-2 rounded-xl md:rounded-2xl flex items-center gap-2 md:gap-3 shadow-md border-white/10">
-            <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${
+          <div className="glass px-2 md:px-5 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 md:gap-3 shadow-md border-white/10">
+            <div className={`w-1 h-1 md:w-2 md:h-2 rounded-full ${
               connectionState === ConnectionState.OFFLINE ? 'bg-slate-400' :
               connectionState === ConnectionState.THINKING || connectionState === ConnectionState.RECONNECTING ? 'bg-indigo-400 animate-pulse' :
               connectionState === ConnectionState.ERROR ? 'bg-red-500' :
               connectionState === ConnectionState.CONNECTING ? 'bg-yellow-400 animate-pulse' : 'bg-emerald-500'
             }`}></div>
-            <span className="text-[9px] md:text-xs font-bold text-white uppercase tracking-tighter">{connectionState}</span>
+            <span className="text-[7px] md:text-xs font-bold text-white uppercase tracking-tighter">{connectionState}</span>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-8 min-h-0">
-        <section className="lg:col-span-5 flex flex-col gap-6 min-h-0">
-          <div className="relative min-h-[350px] lg:flex-1 flex flex-col items-center glass rounded-[2rem] shadow-xl overflow-hidden group">
+      <main className="flex-1 flex flex-col lg:grid lg:grid-cols-12 gap-4 lg:gap-8 min-h-0">
+        <section className="lg:col-span-5 flex flex-col gap-4 min-h-0">
+          <div className="relative min-h-[300px] md:min-h-[450px] lg:flex-1 flex flex-col items-center glass rounded-[1.5rem] md:rounded-[2rem] shadow-xl overflow-hidden group">
             <Visualizer analyser={analyserRef.current} connectionState={connectionState} />
             
-            <div className="z-10 h-full w-full flex flex-col items-center py-8 lg:py-10">
-              <div className="flex-1 flex items-center justify-center px-6">
+            <div className="z-10 h-full w-full flex flex-col items-center py-6 md:py-12">
+              <div className="flex-1 flex items-center justify-center px-4 md:px-6">
                 {transcription && (
-                  <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <p className="text-sm lg:text-base text-indigo-200 font-medium italic leading-relaxed text-center">
+                  <div className="bg-black/40 backdrop-blur-md px-4 py-2 md:px-6 md:py-4 rounded-xl md:rounded-2xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <p className="text-[10px] md:text-base text-indigo-200 font-medium italic leading-relaxed text-center">
                       "{transcription}"
                     </p>
                   </div>
                 )}
               </div>
               
-              <div className="relative shrink-0 my-4">
+              <div className="relative shrink-0 my-6 md:my-10 flex items-center justify-center">
+                {/* Decorative pulsing rings */}
+                {connectionState !== ConnectionState.OFFLINE && (
+                   <>
+                     <div className="absolute w-[120%] h-[120%] rounded-full border border-indigo-500/10 animate-ping"></div>
+                     <div className="absolute w-[140%] h-[140%] rounded-full border border-indigo-500/5 animate-ping [animation-delay:0.5s]"></div>
+                   </>
+                )}
+
                 <button 
                   onClick={connectionState === ConnectionState.OFFLINE || connectionState === ConnectionState.ERROR ? () => startSession() : () => stopSession()}
-                  className={`w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center text-xl md:text-2xl transition-all duration-500 shadow-2xl relative z-20 ${
+                  className={`w-32 h-32 md:w-48 md:h-48 rounded-full flex items-center justify-center text-3xl md:text-5xl transition-all duration-500 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative z-20 overflow-hidden ${
                     connectionState === ConnectionState.OFFLINE || connectionState === ConnectionState.ERROR
-                    ? 'bg-white/10 hover:scale-105 hover:bg-white/20 text-white' 
-                    : connectionState === ConnectionState.THINKING || connectionState === ConnectionState.RECONNECTING ? 'bg-indigo-600 text-white animate-bounce' : 'bg-red-500 text-white animate-pulse'
+                    ? 'bg-white/10 hover:scale-105 hover:bg-white/15 text-white/90' 
+                    : connectionState === ConnectionState.THINKING || connectionState === ConnectionState.RECONNECTING 
+                      ? 'bg-indigo-600 text-white animate-bounce' 
+                      : connectionState === ConnectionState.LISTENING 
+                        ? 'bg-pink-600 text-white animate-pulse'
+                        : 'bg-emerald-600 text-white'
                   }`}
                 >
-                  <i className={`fa-solid ${connectionState === ConnectionState.OFFLINE || connectionState === ConnectionState.ERROR ? 'fa-microphone' : 'fa-stop-circle'}`}></i>
+                  {/* Subtle inner glow */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-30"></div>
+                  
+                  <i className={`fa-solid ${connectionState === ConnectionState.OFFLINE || connectionState === ConnectionState.ERROR ? 'fa-microphone' : 'fa-stop-circle'} relative z-10`}></i>
                 </button>
               </div>
 
-              <div className="shrink-0 flex flex-col items-center justify-center space-y-2 px-6 text-center">
-                <h2 className={`text-lg md:text-xl font-bold tracking-tight ${connectionState === ConnectionState.ERROR ? 'text-red-400' : 'text-white'}`}>{aiPrompt}</h2>
-                <div className="px-4 py-1.5 bg-white/5 rounded-full inline-block border border-indigo-500/20 max-w-full">
-                  <p className="text-[10px] md:text-xs font-bold text-indigo-300 truncate">{aiSubtext}</p>
+              <div className="shrink-0 flex flex-col items-center justify-center space-y-2 md:space-y-4 px-4 md:px-6 text-center">
+                <h2 className={`text-lg md:text-2xl font-bold tracking-tight ${connectionState === ConnectionState.ERROR ? 'text-red-400' : 'text-white'}`}>{aiPrompt}</h2>
+                <div className="px-4 py-1.5 md:px-6 md:py-2 bg-white/5 rounded-full inline-block border border-indigo-500/20 max-w-full">
+                  <p className="text-[10px] md:text-sm font-bold text-indigo-300 truncate tracking-wide">{aiSubtext}</p>
                 </div>
               </div>
             </div>
@@ -472,8 +486,8 @@ const App: React.FC = () => {
           <AssistantAvatar state={connectionState} />
         </section>
 
-        <section className="lg:col-span-7 flex flex-col gap-6 min-h-0">
-          <div className="h-[500px] lg:flex-1 min-h-0">
+        <section className="lg:col-span-7 flex flex-col gap-4 lg:gap-8 min-h-0">
+          <div className="h-[400px] md:h-[500px] lg:flex-1 min-h-0">
             <TaskList 
               tasks={tasks} 
               onToggle={(id) => handleUpdateTasks(tasks.map(t => t.id === id ? {...t, status: t.status === 'done' ? 'pending' : 'done'} : t))} 
@@ -485,17 +499,17 @@ const App: React.FC = () => {
             />
           </div>
 
-          <div className="p-3 lg:p-4 glass rounded-[2rem] flex gap-2 lg:gap-3 shadow-lg border-white/10 shrink-0">
+          <div className="p-2 md:p-4 glass rounded-[1.5rem] md:rounded-[2rem] flex gap-2 md:gap-3 shadow-lg border-white/10 shrink-0 mb-4 lg:mb-0">
             <input 
               type="text" 
               value={manualInput}
               onChange={(e) => setManualInput(e.target.value)}
-              placeholder={`Tambah tugas untuk ${selectedDate}...`}
-              className="flex-1 min-w-0 px-4 md:px-5 py-3 lg:py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none text-white font-bold text-sm lg:text-base placeholder:text-slate-600 transition-all"
+              placeholder={`Tugas untuk ${selectedDate}...`}
+              className="flex-1 min-w-0 px-3 md:px-5 py-2.5 md:py-4 bg-white/5 border border-white/10 rounded-xl md:rounded-2xl focus:outline-none text-white font-bold text-xs md:text-base placeholder:text-slate-600 transition-all"
               onKeyDown={(e) => { if (e.key === 'Enter' && manualInput) { addTask(manualInput, selectedDate); setManualInput(''); } }}
             />
-            <button onClick={() => { if (manualInput) { addTask(manualInput, selectedDate); setManualInput(''); } }} className="w-12 h-12 lg:w-14 lg:h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl flex items-center justify-center transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0">
-              <i className="fa-solid fa-plus text-lg lg:text-xl"></i>
+            <button onClick={() => { if (manualInput) { addTask(manualInput, selectedDate); setManualInput(''); } }} className="w-10 h-10 md:w-14 md:h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl md:rounded-2xl flex items-center justify-center transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0">
+              <i className="fa-solid fa-plus text-sm md:text-xl"></i>
             </button>
           </div>
         </section>
