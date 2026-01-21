@@ -242,7 +242,7 @@ const App: React.FC = () => {
             scriptProcessor.onaudioprocess = (e) => {
               const pcmData = createPcmBlob(e.inputBuffer.getChannelData(0));
               sessionPromise.then(s => {
-                if (!isClosingRef.current) {
+                if (!isClosingRef.current && s) {
                   s.sendRealtimeInput({ media: { data: pcmData, mimeType: 'audio/pcm;rate=16000' } });
                 }
               }).catch(() => {});
@@ -250,9 +250,9 @@ const App: React.FC = () => {
             source.connect(scriptProcessor);
             scriptProcessor.connect(inputCtx.destination);
           },
-          onmessage: async (message) => {
-            if (message.serverContent?.outputTranscription) {
-              setTranscription(prev => prev + message.serverContent!.outputTranscription!.text);
+          onmessage: async (message: LiveServerMessage) => {
+            if (message.serverContent?.outputTranscription?.text) {
+              setTranscription(prev => prev + message.serverContent!.outputTranscription!.text!);
             }
 
             if (message.serverContent?.turnComplete) {
@@ -325,9 +325,9 @@ const App: React.FC = () => {
                 }
                 
                 sessionPromise.then(s => {
-                  if (!isClosingRef.current) {
+                  if (!isClosingRef.current && s) {
                     s.sendToolResponse({ 
-                      functionResponses: { id: fc.id, name: fc.name, response }
+                      functionResponses: [{ id: fc.id, name: fc.name, response }]
                     });
                   }
                 }).catch(() => {});
