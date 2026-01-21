@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Task, TaskPriority } from '../types';
 
 interface TaskListProps {
@@ -13,6 +13,8 @@ interface TaskListProps {
 const TaskList: React.FC<TaskListProps> = ({ 
   tasks, onToggle, onDelete, onCopy, selectedDate, setSelectedDate 
 }) => {
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
   const filteredTasks = useMemo(() => {
     const list = tasks.filter(task => {
       const taskDate = new Date(task.createdAt);
@@ -48,6 +50,12 @@ const TaskList: React.FC<TaskListProps> = ({
     }
   };
 
+  const handleDateClick = () => {
+    if (dateInputRef.current && 'showPicker' in dateInputRef.current) {
+      dateInputRef.current.showPicker();
+    }
+  };
+
   return (
     <div className="flex flex-col h-full overflow-hidden glass rounded-[2rem] shadow-soft border-white/10">
       <div className="p-4 md:p-6 border-b border-white/10 shrink-0">
@@ -71,10 +79,12 @@ const TaskList: React.FC<TaskListProps> = ({
         <div className="flex items-center gap-2 md:gap-4">
           <div className="relative flex-1">
             <input 
+              ref={dateInputRef}
               type="date" 
               value={selectedDate}
+              onClick={handleDateClick}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full px-3 py-2 md:px-4 md:py-3 bg-black/20 border border-white/10 rounded-xl font-bold text-xs md:text-sm text-white focus:outline-none focus:ring-2 ring-indigo-500/50 transition-all"
+              className="w-full px-3 py-2 md:px-4 md:py-3 bg-black/40 border border-white/10 rounded-xl font-bold text-xs md:text-sm text-white focus:outline-none focus:ring-2 ring-indigo-500/50 transition-all cursor-pointer [color-scheme:dark]"
             />
           </div>
           <div className="px-3 py-2 md:px-4 md:py-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 whitespace-nowrap">
