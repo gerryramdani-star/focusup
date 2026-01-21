@@ -14,7 +14,6 @@ interface TaskListProps {
 const TaskList: React.FC<TaskListProps> = ({ 
   tasks, onToggle, onDelete, onCopy, selectedDate, setSelectedDate 
 }) => {
-  // Normalize dates and filter
   const filteredTasks = useMemo(() => {
     const list = tasks.filter(task => {
       const taskDate = new Date(task.createdAt);
@@ -23,8 +22,7 @@ const TaskList: React.FC<TaskListProps> = ({
       return localTaskDate.toISOString().startsWith(selectedDate);
     });
 
-    // Sort by priority: High > Medium > Normal > Low
-    const priorityMap: Record<string, number> = {
+    const priorityOrder: Record<string, number> = {
       'High': 0,
       'Medium': 1,
       'Normal': 2,
@@ -32,8 +30,10 @@ const TaskList: React.FC<TaskListProps> = ({
     };
 
     return list.sort((a, b) => {
-      const pA = priorityMap[a.priority || 'Normal'];
-      const pB = priorityMap[b.priority || 'Normal'];
+      // Menggunakan fallback value (2 untuk Normal) jika prioritas tidak ditemukan
+      const pA = priorityOrder[a.priority || 'Normal'] ?? 2;
+      const pB = priorityOrder[b.priority || 'Normal'] ?? 2;
+      
       if (pA !== pB) return pA - pB;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
