@@ -1,19 +1,23 @@
-import React, { useMemo, useRef } from 'react';
+
+import React, { useMemo, useRef, useState } from 'react';
 import { Task, TaskPriority } from '../types';
 
 interface TaskListProps {
   tasks: Task[];
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onRename: (id: string, content: string) => void;
   onCopy: () => void;
   selectedDate: string;
   setSelectedDate: (date: string) => void;
 }
 
 const TaskList: React.FC<TaskListProps> = ({ 
-  tasks, onToggle, onDelete, onCopy, selectedDate, setSelectedDate 
+  tasks, onToggle, onDelete, onRename, onCopy, selectedDate, setSelectedDate 
 }) => {
   const dateInputRef = useRef<HTMLInputElement>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
 
   const filteredTasks = useMemo(() => {
     const list = tasks.filter(task => {
@@ -54,6 +58,22 @@ const TaskList: React.FC<TaskListProps> = ({
     if (dateInputRef.current && 'showPicker' in dateInputRef.current) {
       dateInputRef.current.showPicker();
     }
+  };
+
+  const startEditing = (task: Task) => {
+    setEditingId(task.id);
+    setEditValue(task.content);
+  };
+
+  const saveEdit = (id: string) => {
+    if (editValue.trim()) {
+      onRename(id, editValue.trim());
+    }
+    setEditingId(null);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
   };
 
   return (
@@ -127,23 +147,57 @@ const TaskList: React.FC<TaskListProps> = ({
               
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <p className={`text-xs md:text-sm font-bold tracking-tight text-white leading-tight ${task.status === 'done' ? 'line-through text-slate-500 opacity-60' : ''}`}>
-                    {task.content}
-                  </p>
-                  {task.priority && task.priority !== 'Normal' && (
-                    <span className={`text-[8px] md:text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${getPriorityColor(task.priority)}`}>
-                      {task.priority}
-                    </span>
+                  {editingId === task.id ? (
+                    <div className="flex flex-1 items-center gap-2">
+                      <input
+                        autoFocus
+                        type="text"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onBlur={() => saveEdit(task.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') saveEdit(task.id);
+                          if (e.key === 'Escape') cancelEdit();
+                        }}
+                        className="flex-1 bg-indigo-500/10 border border-indigo-500/30 rounded-lg px-2 py-1 text-xs md:text-sm text-white focus:outline-none focus:ring-1 ring-indigo-500 font-bold"
+                      />
+                      <button onClick={() => saveEdit(task.id)} className="text-emerald-400 hover:text-emerald-300 p-1">
+                        <i className="fa-solid fa-check text-xs"></i>
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p className={`text-xs md:text-sm font-bold tracking-tight text-white leading-tight ${task.status === 'done' ? 'line-through text-slate-500 opacity-60' : ''}`}>
+                        {task.content}
+                      </p>
+                      {task.priority && task.priority !== 'Normal' && (
+                        <span className={`text-[8px] md:text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${getPriorityColor(task.priority)}`}>
+                          {task.priority}
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
 
-              <button 
-                onClick={() => onDelete(task.id)}
-                className="opacity-100 lg:opacity-0 group-hover:opacity-100 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-all shrink-0"
-              >
-                <i className="fa-solid fa-trash-can text-xs md:text-sm"></i>
-              </button>
+              <div className="flex items-center gap-1 shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-all">
+                {editingId !== task.id && (
+                  <button 
+                    onClick={() => startEditing(task)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 transition-all"
+                    title="Rename task"
+                  >
+                    <i className="fa-solid fa-pen-to-square text-xs md:text-sm"></i>
+                  </button>
+                )}
+                <button 
+                  onClick={() => onDelete(task.id)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                  title="Delete task"
+                >
+                  <i className="fa-solid fa-trash-can text-xs md:text-sm"></i>
+                </button>
+              </div>
             </div>
           ))
         )}
