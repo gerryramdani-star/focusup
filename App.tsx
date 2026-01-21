@@ -252,7 +252,7 @@ const App: React.FC = () => {
           },
           onmessage: async (message: LiveServerMessage) => {
             if (message.serverContent?.outputTranscription?.text) {
-              setTranscription(prev => prev + message.serverContent!.outputTranscription!.text!);
+              setTranscription(prev => prev + (message.serverContent?.outputTranscription?.text || ''));
             }
 
             if (message.serverContent?.turnComplete) {
@@ -278,7 +278,8 @@ const App: React.FC = () => {
               sourcesRef.current.add(source);
             }
 
-            if (message.toolCall) {
+            // FIX: Added safety check for message.toolCall.functionCalls to satisfy TS18048
+            if (message.toolCall?.functionCalls) {
               setConnectionState(ConnectionState.THINKING);
               setAiPrompt('Analyzing...');
               
