@@ -1,0 +1,7 @@
+{
+  "name": "Neo-Voice Standup Manager",
+  "description": "A neo-brutalist daily standup manager powered by Gemini 2.5 Live API. Manage your tasks using natural voice conversations, track streaks, and organize your workday with style.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
