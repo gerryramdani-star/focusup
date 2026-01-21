@@ -259,7 +259,7 @@ const App: React.FC = () => {
               setTranscription('');
             }
 
-            const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+            const base64Audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (base64Audio) {
               setConnectionState(ConnectionState.SPEAKING);
               setAiPrompt('FocusUp Assistant');
