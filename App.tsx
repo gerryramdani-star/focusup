@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Type, FunctionDeclaration } from '@google/genai';
 import { Task, UserSettings, ConnectionState } from './types';
@@ -278,7 +277,6 @@ const App: React.FC = () => {
               sourcesRef.current.add(source);
             }
 
-            // FIX: Added safety check for message.toolCall.functionCalls to satisfy TS18048
             if (message.toolCall?.functionCalls) {
               setConnectionState(ConnectionState.THINKING);
               setAiPrompt('Analyzing...');
@@ -399,9 +397,9 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen md:h-screen p-4 md:p-8 max-w-7xl mx-auto md:overflow-hidden transition-all duration-300">
+    <div className="flex flex-col min-h-screen p-4 md:p-6 lg:p-8 max-w-[1400px] mx-auto transition-all duration-300">
       <header className="flex justify-between items-center mb-6 md:mb-8 shrink-0">
-        <div className="flex items-center gap-4 md:gap-5">
+        <div className="flex items-center gap-3 md:gap-5">
           <div className="w-10 h-10 md:w-14 md:h-14 glass rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
             <i className="fa-solid fa-microphone-lines text-indigo-500 text-lg md:text-2xl"></i>
           </div>
@@ -428,26 +426,26 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-10 min-h-0">
-        <section className="flex flex-col gap-6 md:gap-8 min-h-0">
-          <div className="relative h-[400px] md:flex-1 flex flex-col items-center glass rounded-[2rem] md:rounded-[2.5rem] shadow-xl overflow-hidden group">
+      <main className="flex-1 flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-8 min-h-0">
+        <section className="lg:col-span-5 flex flex-col gap-6 min-h-0">
+          <div className="relative min-h-[350px] lg:flex-1 flex flex-col items-center glass rounded-[2rem] shadow-xl overflow-hidden group">
             <Visualizer analyser={analyserRef.current} connectionState={connectionState} />
             
-            <div className="z-10 h-full w-full flex flex-col items-center py-8 md:py-12">
+            <div className="z-10 h-full w-full flex flex-col items-center py-8 lg:py-10">
               <div className="flex-1 flex items-center justify-center px-6">
                 {transcription && (
                   <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <p className="text-sm md:text-base text-indigo-200 font-medium italic leading-relaxed text-center">
+                    <p className="text-sm lg:text-base text-indigo-200 font-medium italic leading-relaxed text-center">
                       "{transcription}"
                     </p>
                   </div>
                 )}
               </div>
               
-              <div className="relative shrink-0">
+              <div className="relative shrink-0 my-4">
                 <button 
                   onClick={connectionState === ConnectionState.OFFLINE || connectionState === ConnectionState.ERROR ? () => startSession() : () => stopSession()}
-                  className={`w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center text-2xl md:text-3xl transition-all duration-500 shadow-2xl relative z-20 ${
+                  className={`w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center text-xl md:text-2xl transition-all duration-500 shadow-2xl relative z-20 ${
                     connectionState === ConnectionState.OFFLINE || connectionState === ConnectionState.ERROR
                     ? 'bg-white/10 hover:scale-105 hover:bg-white/20 text-white' 
                     : connectionState === ConnectionState.THINKING || connectionState === ConnectionState.RECONNECTING ? 'bg-indigo-600 text-white animate-bounce' : 'bg-red-500 text-white animate-pulse'
@@ -457,9 +455,9 @@ const App: React.FC = () => {
                 </button>
               </div>
 
-              <div className="flex-1 flex flex-col items-center justify-center mt-6 md:mt-8 space-y-2 md:space-y-3 px-6 text-center">
-                <h2 className={`text-xl md:text-2xl font-bold tracking-tight ${connectionState === ConnectionState.ERROR ? 'text-red-400' : 'text-white'}`}>{aiPrompt}</h2>
-                <div className="px-4 py-1.5 md:px-5 md:py-2 bg-white/5 rounded-full inline-block border border-indigo-500/20 max-w-full">
+              <div className="shrink-0 flex flex-col items-center justify-center space-y-2 px-6 text-center">
+                <h2 className={`text-lg md:text-xl font-bold tracking-tight ${connectionState === ConnectionState.ERROR ? 'text-red-400' : 'text-white'}`}>{aiPrompt}</h2>
+                <div className="px-4 py-1.5 bg-white/5 rounded-full inline-block border border-indigo-500/20 max-w-full">
                   <p className="text-[10px] md:text-xs font-bold text-indigo-300 truncate">{aiSubtext}</p>
                 </div>
               </div>
@@ -469,8 +467,8 @@ const App: React.FC = () => {
           <AssistantAvatar state={connectionState} />
         </section>
 
-        <section className="flex flex-col gap-6 md:overflow-hidden min-h-0">
-          <div className="h-[450px] md:h-full">
+        <section className="lg:col-span-7 flex flex-col gap-6 min-h-0">
+          <div className="h-[500px] lg:flex-1 min-h-0">
             <TaskList 
               tasks={tasks} 
               onToggle={(id) => handleUpdateTasks(tasks.map(t => t.id === id ? {...t, status: t.status === 'done' ? 'pending' : 'done'} : t))} 
@@ -481,17 +479,17 @@ const App: React.FC = () => {
             />
           </div>
 
-          <div className="p-3 md:p-4 glass rounded-[2rem] flex gap-2 md:gap-3 shadow-lg border-white/10 shrink-0">
+          <div className="p-3 lg:p-4 glass rounded-[2rem] flex gap-2 lg:gap-3 shadow-lg border-white/10 shrink-0">
             <input 
               type="text" 
               value={manualInput}
               onChange={(e) => setManualInput(e.target.value)}
               placeholder={`Tambah tugas untuk ${selectedDate}...`}
-              className="flex-1 min-w-0 px-4 md:px-5 py-3 md:py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none text-white font-bold text-sm md:text-base placeholder:text-slate-600 transition-all"
+              className="flex-1 min-w-0 px-4 md:px-5 py-3 lg:py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none text-white font-bold text-sm lg:text-base placeholder:text-slate-600 transition-all"
               onKeyDown={(e) => { if (e.key === 'Enter' && manualInput) { addTask(manualInput, selectedDate); setManualInput(''); } }}
             />
-            <button onClick={() => { if (manualInput) { addTask(manualInput, selectedDate); setManualInput(''); } }} className="w-12 h-12 md:w-14 md:h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl flex items-center justify-center transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0">
-              <i className="fa-solid fa-plus text-lg md:text-xl"></i>
+            <button onClick={() => { if (manualInput) { addTask(manualInput, selectedDate); setManualInput(''); } }} className="w-12 h-12 lg:w-14 lg:h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl flex items-center justify-center transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0">
+              <i className="fa-solid fa-plus text-lg lg:text-xl"></i>
             </button>
           </div>
         </section>
